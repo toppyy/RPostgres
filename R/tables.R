@@ -149,6 +149,10 @@ list_tables <- function(
       "  AND (table_schema <> 'pg_catalog') \n"
     )
   } else {
+    if (class(where_schema) == 'Id') {
+      quoted_name <- dbQuoteString(conn, where_schema@name)
+      where_schema <- paste0("table_schema = ", quoted_name)
+    }
     query <- paste0(query, "  AND ", where_schema)
   }
 
@@ -157,7 +161,7 @@ list_tables <- function(
   }
 
   if (!is.null(order_by)) {
-    query <- paste0(query, "ORDER BY ", order_by)
+    query <- paste0(query, " ORDER BY ", order_by)
   }
 
   query
